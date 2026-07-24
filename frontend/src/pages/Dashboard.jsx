@@ -75,6 +75,30 @@ function Dashboard() {
   if (isLoading) return <div style={{ padding: '2rem' }}>Loading your movies...</div>;
   if (error) return <div style={{ padding: '2rem', color: 'red' }}>{error}</div>;
 
+
+  // 1. Add this function inside function Dashboard() { ... }
+const handleDeleteAccount = async () => {
+    // Give the user a warning popup before destroying their data
+    if (!window.confirm("Are you sure? This will permanently delete your account and all your movie ratings!")) {
+        return;
+    }
+
+    const token = localStorage.getItem('token');
+    try {
+        await axios.delete('http://localhost:5000/api/account', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Clear their VIP wristband from memory and send them to the homepage
+        localStorage.removeItem('token');
+        alert("Your account has been permanently deleted.");
+        navigate('/');
+    } catch (err) {
+        console.error("Error deleting account:", err);
+        alert("Failed to delete account. Please try logging in again.");
+    }
+};
+
   return (
     <div style={{ padding: '2rem' }}>
       <h1>My Rated Movies</h1>
@@ -103,6 +127,22 @@ function Dashboard() {
           ))}
         </div>
       )}
+      <div style={{ marginTop: '4rem', borderTop: '1px solid #333', paddingTop: '2rem' }}>
+        <button 
+          onClick={handleDeleteAccount}
+          style={{ 
+            backgroundColor: '#dc3545', 
+            color: 'white', 
+            padding: '10px 20px', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          Delete My Account
+        </button>
+      </div>
     </div>
   );
 }

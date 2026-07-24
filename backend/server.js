@@ -122,6 +122,17 @@ app.delete('/api/ratings/:movieId', authenticateToken, async (req, res) => {
     }
 });
 
+app.delete('/api/account', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+
+    try {
+        await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+        res.status(200).json({ message: "Account and all ratings deleted successfully!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Choose a port (default to 5000)
 const PORT = process.env.PORT || 5000;
 
