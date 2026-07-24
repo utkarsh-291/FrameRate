@@ -8,23 +8,22 @@ function MovieDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0); 
   const [error, setError] = useState(null);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Fetch TMDB movie details
         const tmdbRes = await axios.get(
           `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_API_KEY}`
         );
         setMovie(tmdbRes.data);
 
-        // 2. NEW: Check if the logged-in user already rated this movie!
         const token = localStorage.getItem('token');
         if (token) {
           const dbRes = await axios.get('http://localhost:5000/api/ratings', {
             headers: { Authorization: `Bearer ${token}` }
           });
-          // Match database movie_id against the URL id
           const existingRating = dbRes.data.find(r => String(r.movie_id) === String(id));
           if (existingRating) {
             setUserRating(existingRating.rating);
@@ -41,10 +40,17 @@ function MovieDetails() {
     fetchData();
   }, [id]); 
 
+  const showMessage = (text) => {
+    setMessage(text);
+    setTimeout(() => {
+      setMessage("");
+    }, 2000);
+  };
+
   const handleRateMovie = async (stars) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert("You must be logged in to rate a movie!");
+      showMessage("❌ You must be logged in to rate a movie!");      
       return;
     }
     try {
@@ -53,14 +59,12 @@ function MovieDetails() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUserRating(stars);
-      alert("Rating saved successfully!");
     } catch (err) {
       console.error(err);
-      alert("Failed to save rating. Please try again.");
+      showMessage("❌ Failed to save rating.");
     }
   };
 
-  // NEW: Function to delete the rating
   const handleDeleteRating = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -69,11 +73,10 @@ function MovieDetails() {
       await axios.delete(`http://localhost:5000/api/ratings/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserRating(0); // Turn off the stars in the UI
-      alert("Rating removed!");
+      setUserRating(0); 
     } catch (err) {
       console.error(err);
-      alert("Failed to remove rating.");
+      showMessage("❌ Failed to remove rating."); // Replaced old alert()
     }
   };
 
@@ -115,43 +118,72 @@ function MovieDetails() {
         </div>
       </div>
       
-      <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #00d8ff', display: 'inline-block' }}>
-        <h3>Rate this movie:</h3>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button 
-              key={star} 
-              onClick={() => handleRateMovie(star)}
-              style={{ 
-                fontSize: '2rem', 
-                background: 'none', 
-                border: 'none', 
-                cursor: 'pointer',
-                color: star <= userRating ? 'gold' : 'gray' 
-              }}
-            >
-              ★
-            </button>
-          ))}
+      {/* Rating Box */}
+      <div style={{ margin: '2rem auto', padding: '1.5rem', border: '1px solid #00d8ff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '400px', borderRadius: '8px', backgroundColor: 'rgba(26, 26, 26, 0.9)' }}>
+        <h3 style={{ margin: '0 0 15px 0' }}>Rate this movie:</h3>
+        
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }} 
+             onMouseLeave={() => setHoverRating(0)}>
+          {[1, 2, 3, 4, 5].map((star) => {
+            
+            // THE FIX 1: Check if hovering FIRST, otherwise fall back to saved userRating
+            const isGold = star <= (hoverRating || userRating);
 
-          {/* NEW: Only show the delete button if they have an active rating! */}
-          {userRating > 0 && (
+            return (
+              <button 
+                key={star} 
+                onClick={() => handleRateMovie(star)}
+                // THE FIX 2: Update hover state when mouse touches this button
+                onMouseEnter={() => setHoverRating(star)}
+                style={{ 
+                  fontSize: '2.2rem', 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  // THE FIX 3: Apply the dynamic gold/gray color & smooth animation
+                  color: isGold ? 'gold' : '#555',
+                  transition: 'color 0.05s ease-in-out, transform 0.1s ease',
+                  transform: star <= hoverRating ? 'scale(1.15)' : 'scale(1)',
+                  padding: '0 4px'
+                }}
+              >
+                ★
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Custom Message Notification */}
+        {message && (
+          <p style={{
+            margin: "15px 0 5px 0",
+            fontWeight: "bold",
+            color: message.startsWith("❌") ? "#ff4d4d" : "#00d8ff",
+          }}>
+            {message}
+          </p>
+        )}
+
+        {/* Remove Rating Button */}
+        {userRating > 0 && (
+          <div style={{ marginTop: '15px' }}>
             <button 
               onClick={handleDeleteRating}
               style={{
-                marginLeft: '15px',
-                padding: '5px 10px',
+                padding: '8px 14px',
                 backgroundColor: '#dc3545',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                transition: 'opacity 0.2s'
               }}
             >
               Remove Rating
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
