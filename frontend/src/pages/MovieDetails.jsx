@@ -1,4 +1,4 @@
-// src/pages/MovieDetails.jsx
+// frontend/src/pages/MovieDetails.jsx
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
 // import { useParams } from 'react-router-dom'; // Hook to grab the ID from the URL
@@ -21,7 +21,7 @@ function MovieDetails() {
       try {
         // We use the ID from the URL to ask TMDB for specific details
         const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/${id}?api_key=import.meta.env.VITE_TMDB_API_KEY`
+          `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_API_KEY}`
         );
         // TMDB returns a single movie object, not an array of results
         setMovie(response.data);

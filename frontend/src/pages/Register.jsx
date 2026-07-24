@@ -1,6 +1,7 @@
+// frontend/src/pages/Register.jsx
+
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Form } from 'react-router-dom';
 
 function Register() {
     
@@ -18,7 +19,8 @@ function Register() {
             alert(response.data.message);
         } catch (err) {
             console.error(err);
-            alert("Registration failed!");
+            const errorMessage = err.response?.data?.error || err.message;
+            alert("Registration failed: " + errorMessage);
         }
     };
 

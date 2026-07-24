@@ -1,4 +1,4 @@
-// src/pages/Dashboard.jsx
+// frontend/src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +40,7 @@ function Dashboard() {
         // Promise.all lets us run all those network requests at the exact same time!
         const tmdbPromises = rawRatings.map(async (item) => {
           const tmdbRes = await axios.get(
-            `https://api.themoviedb.org/3/movie/${item.movie_id}?api_key=YOUR_TMDB_API_KEY`
+            `https://api.themoviedb.org/3/movie/${item.movie_id}?api_key=${import.meta.env.VITE_TMDB_API_KEY}`
           );
           
           // Combine the TMDB movie data with the user's personal star rating

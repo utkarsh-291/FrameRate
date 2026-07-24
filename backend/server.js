@@ -72,14 +72,20 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (user.rows.length === 0) return res.status(400).json({ error: "User not found" });
+    try {
+        const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (user.rows.length === 0) return res.status(400).json({ error: "User not found" });
 
-    const valid = await bcrypt.compare(password, useReducer.rows[0].passwordHash);
-    if (!valid) return res.status(400).json({ error: "Invalid password" });
+        // Fixed variable name and PostgreSQL column casing
+        const valid = await bcrypt.compare(password, user.rows[0].password_hash);
+        if (!valid) return res.status(400).json({ error: "Invalid password" });
 
-    const token = jwt.sign({ userId: user.rows[0].id }, 'supersecret123', { expiresIn: '1h' });
-    res.json({ token });
+        // Using environment variable for secret
+        const token = jwt.sign({ userId: user.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.json({ token });
+    } catch (err) {
+        res.status(500).json({ error: "Login failed: " + err.message });
+    }
 });
 
 app.post('/api/ratings', authenticateToken, async (req, res) => {
@@ -88,32 +94,18 @@ app.post('/api/ratings', authenticateToken, async (req, res) => {
 
     try {
         await pool.query(
-            'INSERT INTO ratings (user_id, movie_id, rating) VALUES ($1, $2, $3)',
+            `INSERT INTO ratings (user_id, movie_id, rating) 
+             VALUES ($1, $2, $3) 
+             ON CONFLICT (user_id, movie_id) 
+             DO UPDATE SET rating = EXCLUDED.rating`,
             [userId, movieId, rating]
         );
-        res.status(201).json({ message: "Rating saved!" });
+        res.status(200).json({ message: "Rating saved successfully!" });
     } catch (err) {
+        console.error("Database error:", err);
         res.status(500).json({ error: err.message });
     }
 });
-
-app.put('/api/ratings/:movieId', authenticateToken, async (req, res) => {
-    const { rating } = req.body; // We only need the new rating from the body
-    const movieId = req.params.movieId; // We grab the movie ID from the URL
-    const userId = req.user.userId; // We grab the user ID from the VIP wristband
-
-    try {
-        await pool.query(
-            'UPDATE ratings SET rating = $1 WHERE user_id = $2 AND movie_id = $3',
-            [rating, userId, movieId] // Order matches $1, $2, $3 perfectly!
-        );
-        // 200 OK is the standard status code for a successful update
-        res.status(200).json({ message: "Rating updated successfully!" });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 
 app.delete('/api/ratings/:movieId', authenticateToken, async (req, res) => {
     const movieId = req.params.movieId; // Grab ID from the URL
