@@ -21,7 +21,7 @@ function MovieDetails() {
 
         const token = localStorage.getItem('token');
         if (token) {
-          const dbRes = await axios.get('http://localhost:5000/api/ratings', {
+          const dbRes = await axios.get('https://framerate-bfy0.onrender.com/api/ratings', {
             headers: { Authorization: `Bearer ${token}` }
           });
           const existingRating = dbRes.data.find(r => String(r.movie_id) === String(id));
@@ -54,7 +54,7 @@ function MovieDetails() {
       return;
     }
     try {
-      await axios.post('http://localhost:5000/api/ratings', 
+      await axios.post('https://framerate-bfy0.onrender.com/api/ratings', 
         { movieId: id, rating: stars },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -70,7 +70,7 @@ function MovieDetails() {
     if (!token) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/ratings/${id}`, {
+      await axios.delete(`https://framerate-bfy0.onrender.com/api/ratings/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserRating(0); 

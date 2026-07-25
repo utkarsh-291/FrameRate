@@ -18,7 +18,7 @@ function Auth() {
     const endpoint = isLogin ? '/api/login' : '/api/register';
 
     try {
-      const response = await axios.post(`http://localhost:5000${endpoint}`, { email, password });
+      const response = await axios.post(`https://framerate-bfy0.onrender.com${endpoint}`, { email, password });
 
       if (isLogin) {
         // Save token and go to profile

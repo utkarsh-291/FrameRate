@@ -22,7 +22,7 @@ function Profile() {
       }
 
       try {
-        const dbResponse = await axios.get('http://localhost:5000/api/ratings', {
+        const dbResponse = await axios.get('https://framerate-bfy0.onrender.com/api/ratings', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -61,7 +61,7 @@ function Profile() {
 
     const token = localStorage.getItem('token');
     try {
-      await axios.delete('http://localhost:5000/api/account', {
+      await axios.delete('https://framerate-bfy0.onrender.com/api/account', {
         headers: { Authorization: `Bearer ${token}` }
       });
       localStorage.removeItem('token');
@@ -80,7 +80,7 @@ function Profile() {
 
     const token = localStorage.getItem('token');
     try {
-      const res = await axios.post('http://localhost:5000/api/recommendations', 
+      const res = await axios.post('https://framerate-bfy0.onrender.com/api/recommendations', 
         { ratedMovies: ratedMovies }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
