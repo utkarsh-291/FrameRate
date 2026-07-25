@@ -8,11 +8,13 @@ function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     // Dynamically choose the endpoint based on which tab they are on
     const endpoint = isLogin ? '/api/login' : '/api/register';
@@ -31,6 +33,8 @@ function Auth() {
       }
     } catch (err) {
       setError(err.response?.data?.error || "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,6 +86,7 @@ function Auth() {
             style={{ padding: '12px', background: '#00d8ff', color: '#000', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px', fontSize: '1rem' }}
           >
             {isLogin ? "Sign In" : "Register"}
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
 
