@@ -85,8 +85,7 @@ function Auth() {
             type="submit" 
             style={{ padding: '12px', background: '#00d8ff', color: '#000', border: 'none', borderRadius: '5px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px', fontSize: '1rem' }}
           >
-            {isLogin ? "Sign In" : "Register"}
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? (isLogin ? "Signing In..." : "Registering...") : (isLogin ? "Sign In" : "Register")}
           </button>
         </form>
 
