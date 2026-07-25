@@ -6,8 +6,12 @@ import MovieCard from '../components/MovieCard';
 function Profile() {
   const [ratedMovies, setRatedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('ratings'); // 'ratings' or 'settings'
+  const [activeTab, setActiveTab] = useState('ratings'); 
   const navigate = useNavigate();
+
+  // Changed initial state from "" to an empty array []
+  const [aiRecs, setAiRecs] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const fetchUserRatings = async () => {
@@ -68,8 +72,32 @@ function Profile() {
     }
   };
 
+  const handleGetRecommendations = async () => {
+    if (ratedMovies.length === 0) return;
+    
+    setIsGenerating(true);
+    setAiRecs([]); // Reset to empty array
+
+    const token = localStorage.getItem('token');
+    try {
+      const res = await axios.post('http://localhost:5000/api/recommendations', 
+        { ratedMovies: ratedMovies }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // Backend now sends an array of objects!
+      setAiRecs(res.data.recommendations);
+    } catch (err) {
+      console.error(err);
+      const realErrorMessage = err.response?.data?.error || err.message;
+      alert("AI Error: " + realErrorMessage);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   if (isLoading) return <div style={{ padding: '2rem', color: 'white' }}>Loading your profile...</div>;
-return (
+
+  return (
     <div style={{ padding: '2rem', color: 'white', width: '100%', boxSizing: 'border-box', textAlign: 'left' }}>
       
       <h1 style={{ borderBottom: '1px solid #333', paddingBottom: '1rem', margin: '0 0 1.5rem 0' }}>My Profile</h1>
@@ -93,13 +121,120 @@ return (
       {/* TAB 1: RATINGS */}
       {activeTab === 'ratings' && (
         <div>
+          {/* Header Bar with AI Button */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '10px' }}>
+            <h2 style={{ margin: 0 }}>Your Library</h2>
+            
+            {ratedMovies.length > 0 && (
+              <button 
+                onClick={handleGetRecommendations}
+                disabled={isGenerating}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: isGenerating ? '#333' : '#aa3bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '30px',
+                  fontWeight: 'bold',
+                  cursor: isGenerating ? 'wait' : 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 15px rgba(170, 59, 255, 0.2)'
+                }}
+              >
+                {isGenerating ? "✨ Gemini is analyzing your taste..." : "✨ Ask AI What To Watch Next"}
+              </button>
+            )}
+          </div>
+
+          {/* NEW: Structured AI Recommendation Cards */}
+          {aiRecs.length > 0 && (
+            <div style={{ marginBottom: '3rem', background: '#14141e', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(170, 59, 255, 0.4)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid rgba(170, 59, 255, 0.2)', paddingBottom: '10px' }}>
+                <h3 style={{ color: '#aa3bff', margin: 0, fontSize: '1.3rem' }}>🎬 Top 3 AI Picks For You</h3>
+                <button 
+                  onClick={() => setAiRecs([])}
+                  style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 'bold' }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Grid of AI Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                {aiRecs.map((rec, index) => (
+                  <div key={index} style={{ 
+                    background: 'linear-gradient(135deg, #1f1f33 0%, #181828 100%)', 
+                    border: '1px solid #aa3bff66', 
+                    borderRadius: '10px', 
+                    padding: '1.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                  }}>
+                    <div>
+                      {/* Vibe Badge */}
+                      <span style={{ 
+                        background: 'rgba(170, 59, 255, 0.15)', 
+                        color: '#c084fc', 
+                        padding: '4px 10px', 
+                        borderRadius: '20px', 
+                        fontSize: '0.75rem', 
+                        fontWeight: 'bold',
+                        letterSpacing: '0.5px',
+                        display: 'inline-block',
+                        marginBottom: '12px'
+                      }}>
+                        ✨ {rec.vibe}
+                      </span>
+
+                      {/* Title & Year */}
+                      <h4 style={{ margin: '0 0 5px 0', fontSize: '1.3rem', color: '#fff' }}>
+                        {rec.title} <span style={{ fontSize: '0.9rem', color: '#888', fontWeight: 'normal' }}>({rec.year})</span>
+                      </h4>
+                      
+                      {/* Genre */}
+                      <p style={{ color: '#00d8ff', fontSize: '0.85rem', fontWeight: '600', margin: '0 0 12px 0' }}>
+                        {rec.genre}
+                      </p>
+
+                      {/* The "Why" Explanation */}
+                      <p style={{ color: '#d1d5db', fontSize: '0.95rem', lineHeight: '1.5', margin: '0 0 15px 0', fontStyle: 'italic', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '6px', borderLeft: '3px solid #aa3bff' }}>
+                        "{rec.reason}"
+                      </p>
+                    </div>
+
+                    {/* Action Link to search for this movie in your app */}
+                    <Link 
+                      to={`/?search=${encodeURIComponent(rec.title)}`} 
+                      style={{ 
+                        textAlign: 'center',
+                        background: '#2d2d44', 
+                        color: '#fff', 
+                        padding: '10px', 
+                        borderRadius: '6px', 
+                        textDecoration: 'none', 
+                        fontSize: '0.9rem',
+                        fontWeight: 'bold',
+                        border: '1px solid #444',
+                        transition: 'background 0.2s'
+                      }}
+                    >
+                      🔍 Search Movie in App
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Movie Grid */}
           {ratedMovies.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem', background: '#1a1a1a', borderRadius: '8px', border: '1px solid #222' }}>
               <p style={{ fontSize: '1.2rem', color: '#aaa' }}>You haven't rated any movies yet.</p>
               <Link to="/" style={{ display: 'inline-block', marginTop: '15px', padding: '10px 20px', background: '#00d8ff', color: '#000', textDecoration: 'none', borderRadius: '5px', fontWeight: 'bold' }}>Find Movies to Rate</Link>
             </div>
           ) : (
-            /* THE FIX: Clean responsive grid that stretches across 100% of the screen */
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', width: '100%' }}>
               {ratedMovies.map((movie, index) => (
                 <div key={`${movie.id}-${index}`} style={{ position: 'relative', width: '100%' }}>
