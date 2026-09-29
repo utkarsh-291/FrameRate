@@ -81,7 +81,7 @@ function Auth() {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required
-            style={{ padding: '12px', borderRadius: '5px', border: '1px solid #ccc', background: '#fff', color: '#222' }}
+            style={{ padding: '12px', borderRadius: '5px', border: `1px solid ${theme.border}`, background: theme.inputBackground, color: theme.inputText }}
           />
           <button 
             type="submit" 
