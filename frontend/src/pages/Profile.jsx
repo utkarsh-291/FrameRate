@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import MovieCard from '../components/MovieCard';
+import { useTheme } from '../context/ThemeContext';
 
 function Profile() {
+  const { theme, darkMode } = useTheme();
   const [ratedMovies, setRatedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ratings');
@@ -131,8 +133,8 @@ function Profile() {
       <div
         style={{
           padding: '2rem',
-          color: '#222',
-          backgroundColor: '#f5f5f5',
+          color: theme.text,
+          backgroundColor: theme.background,
           minHeight: '100vh'
         }}
       >
@@ -145,8 +147,8 @@ function Profile() {
     <div
       style={{
         padding: '2rem',
-        color: '#222',
-        backgroundColor: '#f5f5f5',
+        color: theme.text,
+        backgroundColor: theme.background,
         width: '100%',
         minHeight: '100vh',
         boxSizing: 'border-box',
@@ -156,7 +158,7 @@ function Profile() {
 
       <h1
         style={{
-          borderBottom: '1px solid #ddd',
+          borderBottom: `1px solid ${theme.border}`,
           paddingBottom: '1rem',
           margin: '0 0 1.5rem 0'
         }}
@@ -170,7 +172,7 @@ function Profile() {
           display: 'flex',
           gap: '20px',
           margin: '0 0 2rem 0',
-          borderBottom: '2px solid #ddd'
+          borderBottom: `2px solid ${theme.border}`
         }}
       >
         <button
@@ -179,7 +181,7 @@ function Profile() {
             padding: '10px 20px',
             background: 'none',
             border: 'none',
-            color: activeTab === 'ratings' ? '#00a8cc' : '#666',
+            color: activeTab === 'ratings' ? '#00a8cc' : theme.secondaryText,
             borderBottom:
               activeTab === 'ratings'
                 ? '2px solid #00d8ff'
@@ -198,7 +200,7 @@ function Profile() {
             padding: '10px 20px',
             background: 'none',
             border: 'none',
-            color: activeTab === 'settings' ? '#dc3545' : '#666',
+            color: activeTab === 'settings' ? '#dc3545' : theme.secondaryText,
             borderBottom:
               activeTab === 'settings'
                 ? '2px solid #dc3545'
@@ -238,9 +240,9 @@ function Profile() {
                 style={{
                   padding: '10px 20px',
                   backgroundColor: isGenerating
-                    ? '#ddd'
+                    ? theme.surfaceAlt
                     : '#aa3bff',
-                  color: 'white',
+                  color: '#fff',
                   border: 'none',
                   borderRadius: '30px',
                   fontWeight: 'bold',
@@ -262,7 +264,7 @@ function Profile() {
             <div
               style={{
                 marginBottom: '3rem',
-                background: '#ffffff',
+                background: theme.surface,
                 padding: '1.5rem',
                 borderRadius: '12px',
                 border: '1px solid rgba(170, 59, 255, 0.4)'
@@ -294,7 +296,7 @@ function Profile() {
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: '#666',
+                    color: theme.secondaryText,
                     cursor: 'pointer',
                     fontSize: '1.2rem',
                     fontWeight: 'bold'
@@ -318,7 +320,7 @@ function Profile() {
                     key={index}
                     style={{
                       background:
-                        'linear-gradient(135deg, #ffffff 0%, #f5f0ff 100%)',
+                        (darkMode ? 'linear-gradient(135deg, #1a1a1a 0%, #241b33 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f5f0ff 100%)'),
                       border: '1px solid #aa3bff66',
                       borderRadius: '10px',
                       padding: '1.5rem',
@@ -354,14 +356,14 @@ function Profile() {
                         style={{
                           margin: '0 0 5px 0',
                           fontSize: '1.3rem',
-                          color: '#222'
+                          color: theme.text
                         }}
                       >
                         {rec.title}{' '}
                         <span
                           style={{
                             fontSize: '0.9rem',
-                            color: '#777',
+                            color: theme.secondaryText,
                             fontWeight: 'normal'
                           }}
                         >
@@ -384,12 +386,12 @@ function Profile() {
                       {/* Why Explanation */}
                       <p
                         style={{
-                          color: '#444',
+                          color: darkMode ? '#ddd' : '#444',
                           fontSize: '0.95rem',
                           lineHeight: '1.5',
                           margin: '0 0 15px 0',
                           fontStyle: 'italic',
-                          background: '#f5f5f5',
+                          background: darkMode ? '#222' : '#f5f5f5',
                           padding: '10px',
                           borderRadius: '6px',
                           borderLeft:
@@ -406,14 +408,14 @@ function Profile() {
                       to={`/?search=${encodeURIComponent(rec.title)}`}
                       style={{
                         textAlign: 'center',
-                        background: '#f0f0f0',
-                        color: '#222',
+                        background: theme.surfaceAlt,
+                        color: theme.text,
                         padding: '10px',
                         borderRadius: '6px',
                         textDecoration: 'none',
                         fontSize: '0.9rem',
                         fontWeight: 'bold',
-                        border: '1px solid #ccc',
+                        border: `1px solid ${theme.border}`,
                         transition: 'background 0.2s'
                       }}
                     >
@@ -432,15 +434,15 @@ function Profile() {
               style={{
                 textAlign: 'center',
                 padding: '4rem',
-                background: '#ffffff',
+                background: theme.surface,
                 borderRadius: '8px',
-                border: '1px solid #ddd'
+                border: `1px solid ${theme.border}`
               }}
             >
               <p
                 style={{
                   fontSize: '1.2rem',
-                  color: '#666'
+                  color: theme.secondaryText
                 }}
               >
                 You haven't rated any movies yet.
@@ -510,7 +512,7 @@ function Profile() {
       {activeTab === 'settings' && (
         <div
           style={{
-            background: '#ffffff',
+            background: theme.surface,
             padding: '2rem',
             borderRadius: '8px',
             border: '1px solid #e5b5b5',
@@ -521,7 +523,7 @@ function Profile() {
 
           <p
             style={{
-              color: '#555',
+              color: theme.secondaryText,
               lineHeight: '1.5'
             }}
           >
