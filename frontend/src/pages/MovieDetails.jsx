@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useTheme } from '../context/ThemeContext';
 
 function MovieDetails() {
+  const { theme, darkMode } = useTheme();
   const { id } = useParams(); 
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,20 +82,20 @@ function MovieDetails() {
     }
   };
 
-  if (isLoading) return <div style={{ padding: '2rem' }}>Loading details...</div>;
-  if (error) return <div style={{ padding: '2rem', color: 'red' }}>{error}</div>;
-  if (!movie) return <div style={{ padding: '2rem' }}>Movie not found.</div>;
+  if (isLoading) return <div style={{ padding: '2rem', background: theme.background, color: theme.text, minHeight: '100vh' }}>Loading details...</div>;
+  if (error) return <div style={{ padding: '2rem', background: theme.background, color: '#ff4d4d', minHeight: '100vh' }}>{error}</div>;
+  if (!movie) return <div style={{ padding: '2rem', background: theme.background, color: theme.text, minHeight: '100vh' }}>Movie not found.</div>;
 
   return (
     <div style={{ 
       padding: '2rem', 
       minHeight: '100vh',
       backgroundImage: movie.backdrop_path 
-        ? `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})` 
-        : '#111',
+        ? `linear-gradient(${darkMode ? 'rgba(0,0,0,0.72), rgba(0,0,0,0.72)' : 'rgba(255,255,255,0.78), rgba(255,255,255,0.78)'}), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})` 
+        : theme.background,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      color: 'white'
+      color: theme.text
     }}>
       <div style={{ display: 'flex', gap: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
         <div>
@@ -104,7 +106,7 @@ function MovieDetails() {
               style={{ borderRadius: '8px', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}
             />
           ) : (
-            <div style={{ width: '300px', height: '450px', backgroundColor: '#333' }}>No Image</div>
+            <div style={{ width: '300px', height: '450px', backgroundColor: theme.surfaceAlt }}>No Image</div>
           )}
         </div>
         <div>
@@ -119,7 +121,7 @@ function MovieDetails() {
       </div>
       
       {/* Rating Box */}
-      <div style={{ margin: '2rem auto', padding: '1.5rem', border: '1px solid #00d8ff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '400px', borderRadius: '8px', backgroundColor: 'rgba(26, 26, 26, 0.9)' }}>
+      <div style={{ margin: '2rem auto', padding: '1.5rem', border: '1px solid #00d8ff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '400px', borderRadius: '8px', backgroundColor: darkMode ? 'rgba(26, 26, 26, 0.92)' : 'rgba(255, 255, 255, 0.92)' }}>
         <h3 style={{ margin: '0 0 15px 0' }}>Rate this movie:</h3>
         
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }} 
@@ -141,7 +143,7 @@ function MovieDetails() {
                   border: 'none', 
                   cursor: 'pointer',
                   // THE FIX 3: Apply the dynamic gold/gray color & smooth animation
-                  color: isGold ? 'gold' : '#555',
+                  color: isGold ? 'gold' : theme.secondaryText,
                   transition: 'color 0.05s ease-in-out, transform 0.1s ease',
                   transform: star <= hoverRating ? 'scale(1.15)' : 'scale(1)',
                   padding: '0 4px'
