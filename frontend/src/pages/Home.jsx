@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MovieCard from '../components/MovieCard';
+import { useTheme } from '../context/ThemeContext';
 
 function Home() {
+  const { theme, darkMode } = useTheme();
   const [displayedMovies, setDisplayedMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -77,21 +79,21 @@ function Home() {
   };
 
   return (
-    <div style={{ padding: '2rem', color: '#222', backgroundColor: '#f5f5f5', minHeight: '100vh', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ padding: '2rem', color: theme.text, backgroundColor: theme.background, minHeight: '100vh', width: '100%', boxSizing: 'border-box' }}>
       
       {/* Hero Banner with Integrated Search */}
       <div style={{ 
         textAlign: 'center', 
         marginBottom: '3rem', 
         padding: '3rem 1rem', 
-        background: '#eafcff', 
+        background: darkMode ? 'linear-gradient(135deg, #1a1a1a 0%, #00d8ff22 100%)' : '#eafcff', 
         borderRadius: '12px',
-        border: '1px solid #ddd',
+        border: `1px solid ${theme.border}`,
         width: '100%',
         boxSizing: 'border-box'
       }}>
-        <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0', color: '#111', fontWeight: 'bold' }}>Explore FrameRate</h1>
-        <p style={{ fontSize: '1.2rem', color: '#555', margin: '0 0 2rem 0' }}>Discover new releases, search your favorites, and track your personal ratings.</p>
+        <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0', color: theme.text, fontWeight: 'bold' }}>Explore FrameRate</h1>
+        <p style={{ fontSize: '1.2rem', color: theme.secondaryText, margin: '0 0 2rem 0' }}>Discover new releases, search your favorites, and track your personal ratings.</p>
 
         <form onSubmit={handleSearch} style={{ display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '550px', margin: '0 auto', flexWrap: 'wrap' }}>
           <input 
@@ -105,8 +107,8 @@ function Home() {
               padding: '12px 16px', 
               borderRadius: '6px', 
               border: '1px solid #06b1cf', 
-              background: '#fff', 
-              color: '#222',
+              background: theme.inputBackground, 
+              color: theme.inputText,
               fontSize: '1rem',
               outline: 'none'
             }}
@@ -122,7 +124,7 @@ function Home() {
             <button 
               type="button" 
               onClick={handleClearSearch}
-              style={{ padding: '12px 16px', background: '#333', color: '#fff', border: '1px solid #555', borderRadius: '6px', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}
+              style={{ padding: '12px 16px', background: theme.surfaceAlt, color: theme.text, border: `1px solid ${theme.border}`, borderRadius: '6px', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}
             >
               ✕ Clear
             </button>
@@ -146,7 +148,7 @@ function Home() {
       
       {/* Page 1 Loading Spinner */}
       {isLoading ? (
-        <p style={{ marginTop: '2rem', color: '#ccc' }}>Loading movies...</p>
+        <p style={{ marginTop: '2rem', color: theme.secondaryText }}>Loading movies...</p>
       ) : (
         <>
           {/* Movie Grid */}
@@ -157,7 +159,7 @@ function Home() {
                 <MovieCard key={`${movie.id}-${index}`} movie={movie} />
               ))
             ) : (
-              <p style={{ color: '#888', gridColumn: '1 / -1', marginTop: '1rem' }}>No movies found.</p>
+              <p style={{ color: theme.secondaryText, gridColumn: '1 / -1', marginTop: '1rem' }}>No movies found.</p>
             )}
           </div>
 
@@ -169,9 +171,9 @@ function Home() {
                 disabled={isLoadingMore}
                 style={{
                   padding: '14px 32px',
-                  backgroundColor: isLoadingMore ? '#eee' : '#fff',
-                  color: isLoadingMore ? '#666' : '#111',
-                  border: '1px solid #222',
+                  backgroundColor: isLoadingMore ? theme.surfaceAlt : theme.surface,
+                  color: isLoadingMore ? theme.secondaryText : theme.text,
+                  border: `1px solid ${theme.border}`,
                   borderRadius: '30px',
                   fontSize: '1.1rem',
                   fontWeight: 'bold',
