@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 function Auth() {
+  const { theme, darkMode } = useTheme();
   // Toggle between Login (true) and Register (false)
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -39,20 +41,20 @@ function Auth() {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', color: '222' }}>
-      <div style={{ background: '#ffffff', padding: '2.5rem', borderRadius: '10px', width: '350px', border: '1px solid #ddd' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', color: theme.text }}>
+      <div style={{ background: theme.surface, padding: '2.5rem', borderRadius: '10px', width: '350px', border: `1px solid ${theme.border}` }}>
         
         {/* Tab Switcher */}
-        <div style={{ display: 'flex', marginBottom: '2rem', borderBottom: '1px solid #333' }}>
+        <div style={{ display: 'flex', marginBottom: '2rem', borderBottom: `1px solid ${theme.border}` }}>
           <button 
             onClick={() => setIsLogin(true)}
-            style={{ flex: 1, padding: '10px', background: 'none', border: 'none', color: isLogin ? '#00d8ff' : '#888', borderBottom: isLogin ? '2px solid #00d8ff' : 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}
+            style={{ flex: 1, padding: '10px', background: 'none', border: 'none', color: isLogin ? '#00d8ff' : theme.secondaryText, borderBottom: isLogin ? '2px solid #00d8ff' : 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}
           >
             Sign In
           </button>
           <button 
             onClick={() => setIsLogin(false)}
-            style={{ flex: 1, padding: '10px', background: 'none', border: 'none', color: !isLogin ? '#00d8ff' : '#888', borderBottom: !isLogin ? '2px solid #00d8ff' : 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}
+            style={{ flex: 1, padding: '10px', background: 'none', border: 'none', color: !isLogin ? '#00d8ff' : theme.secondaryText, borderBottom: !isLogin ? '2px solid #00d8ff' : 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}
           >
             Create Account
           </button>
@@ -62,7 +64,7 @@ function Auth() {
           {isLogin ? "Welcome Back" : "Join FrameRate"}
         </h2>
 
-        {error && <div style={{ color: '#ff4d4d', background: '#ffe5e5', padding: '10px', borderRadius: '5px', marginBottom: '1rem', fontSize: '0.9rem' }}>{error}</div>}
+        {error && <div style={{ color: darkMode ? '#ff6b6b' : '#d93025', background: darkMode ? '#3a1f1f' : '#ffe5e5', padding: '10px', borderRadius: '5px', marginBottom: '1rem', fontSize: '0.9rem' }}>{error}</div>}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <input 
@@ -71,7 +73,7 @@ function Auth() {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required
-            style={{ padding: '12px', borderRadius: '5px', border: '1px solid #ccc', background: '#fff', color: '#222' }}
+            style={{ padding: '12px', borderRadius: '5px', border: `1px solid ${theme.border}`, background: theme.inputBackground, color: theme.inputText }}
           />
           <input 
             type="password" 
