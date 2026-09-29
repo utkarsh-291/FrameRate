@@ -39,8 +39,8 @@ function Auth() {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', color: 'white' }}>
-      <div style={{ background: '#1a1a1a', padding: '2.5rem', borderRadius: '10px', width: '350px', border: '1px solid #333' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', color: '222' }}>
+      <div style={{ background: '#ffffff', padding: '2.5rem', borderRadius: '10px', width: '350px', border: '1px solid #ddd' }}>
         
         {/* Tab Switcher */}
         <div style={{ display: 'flex', marginBottom: '2rem', borderBottom: '1px solid #333' }}>
@@ -62,7 +62,7 @@ function Auth() {
           {isLogin ? "Welcome Back" : "Join FrameRate"}
         </h2>
 
-        {error && <div style={{ color: '#ff4d4d', background: '#330000', padding: '10px', borderRadius: '5px', marginBottom: '1rem', fontSize: '0.9rem' }}>{error}</div>}
+        {error && <div style={{ color: '#ff4d4d', background: '#ffe5e5', padding: '10px', borderRadius: '5px', marginBottom: '1rem', fontSize: '0.9rem' }}>{error}</div>}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <input 
@@ -71,7 +71,7 @@ function Auth() {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required
-            style={{ padding: '12px', borderRadius: '5px', border: '1px solid #444', background: '#222', color: 'white' }}
+            style={{ padding: '12px', borderRadius: '5px', border: '1px solid #ccc', background: '#fff', color: '#222' }}
           />
           <input 
             type="password" 
@@ -79,7 +79,7 @@ function Auth() {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required
-            style={{ padding: '12px', borderRadius: '5px', border: '1px solid #444', background: '#222', color: 'white' }}
+            style={{ padding: '12px', borderRadius: '5px', border: '1px solid #ccc', background: '#fff', color: '#222' }}
           />
           <button 
             type="submit" 

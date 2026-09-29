@@ -77,21 +77,21 @@ function Home() {
   };
 
   return (
-    <div style={{ padding: '2rem', color: 'white', backgroundColor: '#111', minHeight: '100vh', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ padding: '2rem', color: '#222', backgroundColor: '#f5f5f5', minHeight: '100vh', width: '100%', boxSizing: 'border-box' }}>
       
       {/* Hero Banner with Integrated Search */}
       <div style={{ 
         textAlign: 'center', 
         marginBottom: '3rem', 
         padding: '3rem 1rem', 
-        background: 'linear-gradient(135deg, #1a1a1a 0%, #00d8ff22 100%)', 
+        background: '#eafcff', 
         borderRadius: '12px',
-        border: '1px solid #222',
+        border: '1px solid #ddd',
         width: '100%',
         boxSizing: 'border-box'
       }}>
-        <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0', color: '#00d8ff', fontWeight: 'bold' }}>Explore FrameRate</h1>
-        <p style={{ fontSize: '1.2rem', color: '#ccc', margin: '0 0 2rem 0' }}>Discover new releases, search your favorites, and track your personal ratings.</p>
+        <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0', color: '#111', fontWeight: 'bold' }}>Explore FrameRate</h1>
+        <p style={{ fontSize: '1.2rem', color: '#555', margin: '0 0 2rem 0' }}>Discover new releases, search your favorites, and track your personal ratings.</p>
 
         <form onSubmit={handleSearch} style={{ display: 'flex', justifyContent: 'center', gap: '10px', maxWidth: '550px', margin: '0 auto', flexWrap: 'wrap' }}>
           <input 
@@ -104,16 +104,16 @@ function Home() {
               minWidth: '220px',
               padding: '12px 16px', 
               borderRadius: '6px', 
-              border: '1px solid #444', 
-              background: '#222', 
-              color: 'white',
+              border: '1px solid #06b1cf', 
+              background: '#fff', 
+              color: '#222',
               fontSize: '1rem',
               outline: 'none'
             }}
           />
           <button 
             type="submit" 
-            style={{ padding: '12px 24px', background: '#00d8ff', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}
+            style={{ padding: '12px 24px', background: '#06b1cf', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}
           >
             Search
           </button>
@@ -131,9 +131,9 @@ function Home() {
       </div>
 
       {/* Dynamic Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>
         <h2 style={{ margin: 0 }}>
-          {isSearchMode ? `🔍 Search Results for "${searchQuery}"` : "🔥 Trending This Week"}
+          {isSearchMode ? `Search Results for "${searchQuery}"` : "Trending This Week"}
         </h2>
         {isSearchMode && (
           <span onClick={handleClearSearch} style={{ color: '#00d8ff', cursor: 'pointer', fontSize: '0.9rem', textDecoration: 'underline', fontWeight: '500' }}>
@@ -161,7 +161,7 @@ function Home() {
             )}
           </div>
 
-          {/* NEW: Unlimited Feed "Load More" Button */}
+          {/* Unlimited Feed "Load More" Button */}
           {displayedMovies.length > 0 && (
             <div style={{ textAlign: 'center', marginTop: '3rem', marginBottom: '2rem' }}>
               <button 
@@ -169,18 +169,17 @@ function Home() {
                 disabled={isLoadingMore}
                 style={{
                   padding: '14px 32px',
-                  backgroundColor: isLoadingMore ? '#222' : '#1a1a1a',
-                  color: isLoadingMore ? '#666' : '#00d8ff',
-                  border: '1px solid #00d8ff',
+                  backgroundColor: isLoadingMore ? '#eee' : '#fff',
+                  color: isLoadingMore ? '#666' : '#111',
+                  border: '1px solid #222',
                   borderRadius: '30px',
                   fontSize: '1.1rem',
                   fontWeight: 'bold',
                   cursor: isLoadingMore ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 15px rgba(0, 216, 255, 0.1)'
                 }}
               >
-                {isLoadingMore ? "Loading 20 more movies..." : "⬇ Load More Movies"}
+                {isLoadingMore ? "Loading 20 more movies..." : "More?"}
               </button>
             </div>
           )}

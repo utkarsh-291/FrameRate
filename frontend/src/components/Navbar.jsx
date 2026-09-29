@@ -11,22 +11,22 @@ function Navbar() {
   };
 
   return (
-    <nav style={{ padding: '1.2rem 2rem', background: '#111', borderBottom: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <nav style={{ padding: '1.2rem 2rem', background: '#ffffff', borderBottom: '1px solid #ddd', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <div>
-        <Link to="/" style={{ color: '#00d8ff', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.5rem', letterSpacing: '1px' }}>
+        <Link to="/" style={{ color: '#06b1cf', textDecoration: 'none', fontWeight: 'bold', fontSize: '1.5rem', letterSpacing: '1px' }}>
           FrameRate
         </Link>
       </div>
 
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-        <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Explore</Link>
+        <Link to="/" style={{ color: '#222', textDecoration: 'none', fontWeight: '500' }}>Explore</Link>
 
         {token ? (
           <>
-            <Link to="/profile" style={{ color: '#00d8ff', textDecoration: 'none', fontWeight: '500' }}>My Profile</Link>
+            <Link to="/profile" style={{ color: '#111', textDecoration: 'none', fontWeight: '500' }}>My Profile</Link>
             <button 
               onClick={handleLogout}
-              style={{ background: 'transparent', border: '1px solid #444', color: '#ccc', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}
+              style={{ background: 'transparent', border: '1px solid #ccc', color: '#111', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }}
             >
               Logout
             </button>

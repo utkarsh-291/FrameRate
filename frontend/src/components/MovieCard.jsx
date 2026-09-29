@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function MovieCard({ movie }) {
   return (
     // Changed width from '200px' to '100%' so the grid can control its size!
-    <div style={{ border: '1px solid #333', padding: '1rem', width: '100%', boxSizing: 'border-box', borderRadius: '8px', background: '#1a1a1a' }}>
+    <div style={{ border: '1px solid #ddd', padding: '1rem', width: '100%', boxSizing: 'border-box', borderRadius: '8px', background: '#ffffff' }}>
       <Link to={`/movie/${movie.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
           {movie.poster_path ? (
              <img 
@@ -13,7 +13,7 @@ function MovieCard({ movie }) {
                style={{ width: '100%', borderRadius: '4px', display: 'block' }}
              />
           ) : (
-             <div style={{ height: '300px', backgroundColor: '#222', display: 'flex', alignItems:'center', justifyContent:'center', borderRadius: '4px' }}>No Image</div>
+             <div style={{ height: '300px', backgroundColor: '#eee', display: 'flex', alignItems:'center', justifyContent:'center', borderRadius: '4px' }}>No Image</div>
           )}
           <h3 style={{ fontSize: '1.1rem', margin: '12px 0 6px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{movie.title}</h3>
       </Link>
