@@ -320,7 +320,7 @@ function Profile() {
                     key={index}
                     style={{
                       background:
-                        (darkMode ? 'linear-gradient(135deg, #1a1a1a 0%, #241b33 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f5f0ff 100%)'),
+                        (darkMode ? '#241b33' : '#f5f0ff'),
                       border: '1px solid #aa3bff66',
                       borderRadius: '10px',
                       padding: '1.5rem',

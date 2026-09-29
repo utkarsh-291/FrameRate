@@ -108,7 +108,7 @@ function Navbar() {
             fontWeight: '500',
           }}
         >
-          {darkMode ? '☀️ Light' : '🌙 Dark'}
+          {darkMode ? 'Light' : 'Dark'}
         </button>
       </div>
     </nav>

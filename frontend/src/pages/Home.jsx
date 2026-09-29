@@ -86,7 +86,7 @@ function Home() {
         textAlign: 'center', 
         marginBottom: '3rem', 
         padding: '3rem 1rem', 
-        background: darkMode ? 'linear-gradient(135deg, #1a1a1a 0%, #00d8ff22 100%)' : '#eafcff', 
+        background: darkMode ? '#00d8ff22' : '#eafcff', 
         borderRadius: '12px',
         border: `1px solid ${theme.border}`,
         width: '100%',
